@@ -15,7 +15,7 @@
       #messages > li:nth-child(odd) { background: #efefef; }
     </style>
   </head>
-  <body>
+  <body onload="onLoad()" onbeforeunload="onUnload()">
     <ul id="messages"></ul>
     <form id="form" action="">
       <input id="input" autocomplete="off" /><button>Send</button>
@@ -28,11 +28,12 @@
       var messages = document.getElementById('messages');
       var form = document.getElementById('form');
       var input = document.getElementById('input');
+      var nickname;
 
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         if (input.value) {
-          socket.emit('chat message', input.value);
+          socket.emit('chat message', nickname+': '+input.value);
           input.value = '';
         }
       });
@@ -43,6 +44,19 @@
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });
+
+      function onLoad() {
+        nickname = prompt('Insert nickname');
+        socket.emit('chat message', nickname+' Connected');
+      }
+
+      function onUnload() {
+        socket.emit('chat message', nickname+' Disconected');
+      }
     </script>
   </body>
 </html>
+
+
+
+
